@@ -240,7 +240,7 @@ $(".card .list-group").sortable({
   }
 })
 
-$("trash").droppable({
+$("#trash").droppable({
   accept: ".card .list-group-item",
   tolerance:"touch",
   drop: function(event, ui) {
