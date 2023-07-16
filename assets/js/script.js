@@ -13,6 +13,7 @@ var createTask = function(taskText, taskDate, taskList) {
   // append span and p element to parent li
   taskLi.append(taskSpan, taskP);
 
+  auditTask(taskLi);
 
   // append to ul list on the page
   $("#list-" + taskList).append(taskLi);
@@ -112,10 +113,31 @@ $("#trash").droppable({
 });
 
   // DATE FUNCTION
-  $("#modalDueDate").datepciker({
+  $("#modalDueDate").datepicker({
     // force to select duture date
-    minDate:1 
+    minDate:1, 
+    onClose: function() {
+      // when calendar is closed, "change" event on date input
+      $(this).trigger("change");
+    }
   });
+  var auditTask = function (taskEl) {
+    // get date from taskEL
+    var date = $(taskEl).find("span").text().trim();
+
+    console.log(date)
+
+    // convert moment object at 5pm
+    var time = moment(date, "L").set("hour", 17);
+
+    $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
+
+    if (moment().isAfter(time)) {
+      $(taskEl).addClass("list-group-item-danger");
+    } else if (Math.abs(moment().diff(time,"days")) <= 2) {
+      $(taskEl).addClass("list-group-item-warning")
+    }
+  }
 
 
 // modal was triggered
@@ -208,13 +230,17 @@ $(".list-group").on("click", "span", function() {
       .val(date);
     // swap out elements
     $(this).replaceWith(dateInput);
+    // enable jquery ui datepicker
+    dateInput.datepicker({
+      minDate: 1
+    })
   
     // automatically focus on new element
     dateInput.trigger("focus");
   });
 
   // value of due date was changed
-$(".list-group").on("blur", "input[type='text']", function() {
+$(".list-group").on("change", "input[type='text']", function() {
     // get current text
     var date = $(this)
       .val();
@@ -240,6 +266,9 @@ $(".list-group").on("blur", "input[type='text']", function() {
   
     // replace input with span element
     $(this).replaceWith(taskSpan);
+
+    // pass tasks li el into auditTask to check new due date
+    auditTask($(taskSpan).closest(".list-group-item"))
   });
 
   // remove all tasks
