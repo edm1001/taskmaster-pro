@@ -1,5 +1,13 @@
 # taskmaster-pro
 
+  ## Table of Contents
+* [Description](#Description)
+* [Installation](#Installation)
+* [Usage](#Usage)
+* [Features](#Features)
+* [Contributors](#Contribution)
+* [Question](#Question)
+
 ## Description 
 - App has a sudoku board functionality for their daily or weekly tasks
 
